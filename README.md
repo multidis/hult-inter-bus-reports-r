@@ -1,2 +1,5 @@
-# hult-inter-bus-reports-r
-Building Interactive Business Reports with R course at Hult Business School.
+# Building Interactive Business Reports with R (Post-graduate)
+
+Hult Business School DAT-3535.
+
+Beau Giannini and Pavel B. Paramonov
