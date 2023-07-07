@@ -1,0 +1,33 @@
+---
+title: "Product analysis task"
+subtitle: "Building Interactive Business Reports with R"
+author: "Your Name"
+date: "Hult International Business School"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(DT)
+```
+
+The task involved a few quick tasks based on a produts dataset. The dataset contained information about selected consumer products sold in a small retail store:
+
+```{r, echo=FALSE, message=FALSE}
+p <- read_csv("https://raw.githubusercontent.com/multidis/hult-inter-bus-reports-r/main/basics_practice/products.csv")
+p
+```
+
+
+## Question 1
+
+Proceed here, add other questions and solutions
+
+
+
+## Full dataset
+
+```{r, echo=FALSE}
+datatable(pp)
+```
+
+Try sorting by the respective columns to verify the answers above.
