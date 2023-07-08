@@ -1,0 +1,139 @@
+---
+title: "Storytelling in Data Analytics"
+subtitle: "Building Interactive Business Reports with R (DAT-3535)"
+author: "Beau Giannini and Pavel Paramonov"
+date: "Hult International Business School"
+output:
+  tufte::tufte_html: default
+---
+
+```{r setup, include=FALSE}
+library(tufte)
+# invalidate cache when the tufte version changes
+knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
+options(htmltools.dir.version = FALSE)
+
+library(tidyverse)
+library(ggplot2)
+library(ggtext)
+
+source("theme_swd.R")
+```
+
+`r newthought('An example analysis')` provided in this handout is designed to illustrate the storytelling aspect of business reporting. Your task is to take it as a starting point and produce a report with the best possible layout, appeal, and interactivity that are possible to achieve within a static HTML output format.
+
+You may find the following resources useful^[You are not in any way restricted to use these tools only - explore the R ecosystem!] to the chart types presented in this example:
+
+- Interactive `ggplot2` figures using [plotly](https://plotly.com/ggplot2/).
+- [htmlwidgets](https://www.htmlwidgets.org/) for R.
+- [flexdashboard](https://pkgs.rstudio.com/flexdashboard/) system for R integrated with RStudio tools.
+- Links and materials posted on MyCourses in the respective modules.
+
+You should strive to produce appropriately designed, clear, and uncluttered visualizations combined with narratives that explain an important aspect of the analysis and engages the audience.
+
+
+## Airline On-Time Arrival Performance
+
+On-time and delayed flight data by airline for the San Francisco International Airport (SFO).
+
+- Time period Jan 1 through Dec 31, 2019.^[Your data description should be specific enough to know the time periods, geographical characteristics, population specifics and/or any other aspects essential for the dataset.]
+- All major airlines arriving to SFO are included.
+- A flight is considered delayed if the arrival time lags the schedule by 15 minutes or more.
+- Counts of delayed flights are provided for various delay causes.
+
+*Data source:* US Department of Transportation, Bureau of Transportation Statistics. [https://www.transtats.bts.gov/OT_Delay/OT_DelayCause1.asp](https://www.transtats.bts.gov/OT_Delay/OT_DelayCause1.asp). (Retrieved Feb 24, 2020)^[A proper citation of the dataset origin along with the web link is always helpful and adds credibility.].
+
+
+## Flight delays by airline
+
+```{r, echo=FALSE, warnings=FALSE, message=FALSE, fig.width=6, fig.height=4}
+load(file = "handout_prep_out.rda")
+
+flight_delay_comp %>%
+   ggplot(aes(x=reorder(name, delayedpct), y=delayedpct/100, fill = highlight)) +
+   geom_col(width = 0.8) + coord_flip(clip = "off") +
+   scale_x_discrete() +
+   scale_y_continuous(position = "right", limits = c(0, 0.5), labels = scales::percent) +
+   scale_fill_manual(values = c(GRAY9, RED3), guide = "none") +
+   labs(
+      caption = "SFO arrivals, 2019.\nData source: US Department of Transportation.",
+      y = "% flights delayed over 15 minutes",
+      title = "**Frontier Airlines** has the largest delayed flights fraction"
+   ) +
+   theme_swd() + theme(
+      axis.title.y = element_blank(),
+      plot.title = element_markdown(lineheight = 1.2),
+      plot.subtitle = element_markdown(lineheight = 1.5, linewidth = 10),
+      axis.text.x = element_text(size = 9, color = GRAY5),
+      axis.text.y = element_text(color = GRAY4, size = 10),
+      axis.title.x = element_text(color = GRAY5, size = 10, hjust = 0.05),  
+      axis.line.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      strip.placement = "outside",
+      strip.background = element_rect(fill = NA, color = GRAY9)
+   )
+```
+
+
+## Flight numbers by airline
+
+```{r, echo=FALSE, fig.width=6, fig.height=4}
+flight_number_comp %>%
+   ggplot(aes(x=reorder(name, total), y=total/1000, fill = highlight)) +
+   geom_col(width = 0.8) + coord_flip(clip = "off") +
+   scale_x_discrete() +
+   scale_y_continuous(position = "right", limits = c(0, 60)) +
+   scale_fill_manual(values = c(GRAY9, RED3), guide = "none") +
+   labs(
+      caption = "SFO arrivals, 2019.\nData source: US Department of Transportation.",
+      y = "Total flights (thousands)",
+      title = "The number of Frontier Airlines flights is among the fewest in SFO"
+   ) +
+   theme_swd() + theme(
+      axis.title.y = element_blank(),
+      plot.title = element_markdown(lineheight = 1.2),
+      plot.subtitle = element_markdown(lineheight = 1.5, linewidth = 10),
+      axis.text.x = element_text(size = 9, color = GRAY5),
+      axis.text.y = element_text(color = GRAY4, size = 10),
+      axis.title.x = element_text(color = GRAY5, size = 10, hjust = 0.05),  
+      axis.line.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      strip.placement = "outside",
+      strip.background = element_rect(fill = NA, color = GRAY9)
+   )
+```
+
+While Frontier Airlines have the largest **fraction** of delayed flights, this is not related to a large number of flights^[It may help to choose a visualization that addresses some potential criticisms of your initial conclusion. For instance, the audience may claim that frontier has more delays because it operates a much larger number of flights. This chart clearly shows that is not the case.]. In fact, most other carriers operate a significantly larger number of flights arriving to SFO.
+
+
+## Flight delay causes
+
+```{r, echo=FALSE, fig.width=8, fig.height=5.5}
+ggplot(df, aes(x = factor(Airline, levels = c("Frontier", "Others")), y = value,
+                            fill = factor(cause, levels = c("Carrier", "Aircraft", "Cancelled",
+                                                            "Aviation", "Other")))) + 
+   geom_col(position = "stack", color = "white", width = .6) + 
+   scale_fill_manual(name="Cause", values = c(BLUE2,ORANGE2,RED3,GRAY9,GRAY2)) + 
+   scale_y_continuous(expand = c(0,0), labels = scales::percent) +
+   coord_cartesian(clip = "off") + 
+   labs(title = "Causes of flight delays: Frontier vs. Others") + 
+   theme_minimal() + theme(#panel.grid.major = element_blank(),
+      #panel.grid.minor = element_blank(),
+      #axis.line.y = element_blank(),
+      axis.line.x = element_line(color = GRAY9),
+      axis.title = element_blank(),
+      #axis.ticks = element_blank(),
+      #axis.text.y = element_blank(),
+      axis.text.x = element_text(size = 12),
+      plot.margin = unit(c(1,1,1,4), "cm"),
+      plot.title = element_text(size = 18, color = GRAY2, margin = margin(0,0,.5,0,"cm")),
+      plot.caption = element_text(color = GRAY8, hjust = 0, margin = margin(.3,0,0,0,"cm"))
+   )
+```
+
+Similar factors cause flight delays for Frontier and for other airlines.
+
+
+## Source code
+
+You can find all files needed to produce the current report in the [Github class repository](https://github.com/multidis/hult-inter-bus-reports-r/tree/main/reporting). Please make sure to save all of the files to your working directory.
