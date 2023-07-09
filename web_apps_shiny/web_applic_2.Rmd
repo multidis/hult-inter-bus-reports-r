@@ -1,0 +1,59 @@
+---
+title: "Exploring web applications"
+author: "Int Rep with R"
+date: "2023-07-09"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+You can always modify this text as you like.
+
+## Inputs and Outputs
+
+You can embed Shiny inputs and outputs in your document. Outputs are automatically updated whenever inputs change.  This demonstrates how a standard R plot can be made interactive by wrapping it in the Shiny `renderPlot` function. The `selectInput` and `sliderInput` functions create the input widgets used to drive the plot.
+
+```{r eruptions, echo=FALSE}
+inputPanel(
+  selectInput("n_breaks", label = "Number of bins:",
+              choices = c(10, 20, 35, 50), selected = 20),
+  selectInput("numrows", label = "Number of rows in the table:",
+              choices = c(15, 25, 50), selected = 25),
+  checkboxInput("cbox", label = "Select here:", value = TRUE)
+)
+```
+
+Checkbox state
+
+```{r, echo=FALSE}
+renderPrint(input$cbox)
+```
+
+Now the table
+
+```{r, echo=FALSE}
+conditionalPanel(
+  condition = "input.cbox",
+  renderDataTable(faithful[1:input$numrows, ])
+)
+```
+
+Back to the histogram
+
+```{r, echo=FALSE}
+renderPlot({
+  hist(faithful$eruptions, probability = TRUE, breaks = as.numeric(input$n_breaks),
+       xlab = "Duration (minutes)", main = "Geyser eruption duration")
+  
+  dens <- density(faithful$eruptions, adjust = 1.2)
+  lines(dens, col = "blue")
+})
+```
+
+Some more text here.
+
