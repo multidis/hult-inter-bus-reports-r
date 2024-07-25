@@ -1,7 +1,7 @@
 ---
 title: "Exploring web applications"
 author: "Int Rep with R"
-date: "2023-07-09"
+date: "2024-07-25"
 output: html_document
 runtime: shiny
 ---
@@ -39,7 +39,8 @@ Now the table
 ```{r, echo=FALSE}
 conditionalPanel(
   condition = "input.cbox",
-  renderDataTable(faithful[1:input$numrows, ])
+  #renderDataTable(faithful[1:input$numrows, ])
+  DT::renderDT(faithful[1:input$numrows, ])
 )
 ```
 
@@ -56,4 +57,3 @@ renderPlot({
 ```
 
 Some more text here.
-

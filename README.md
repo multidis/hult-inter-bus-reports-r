@@ -1,5 +1,5 @@
-# Building Interactive Business Reports with R (Post-graduate)
+# Building Interactive Business Reports with R
 
-Hult Business School DAT-3535.
+Hult Business School DAT-3535 (Post-graduate elective).
 
-Beau Giannini and Pavel B. Paramonov
+Pavel B. Paramonov

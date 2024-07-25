@@ -1,0 +1,46 @@
+---
+title: "Example web application"
+output:
+  flexdashboard::flex_dashboard:
+    theme:
+      bootswatch: flatly
+    orientation: rows
+---
+
+
+Item 1 {data-icon="fa-newspaper-o"}
+===================================== 
+
+Sidebar {.sidebar}
+-------------------------------------
+
+```{r}
+```
+
+
+Main content
+-------------------------------------
+
+### Content header
+    
+```{r}
+```
+
+
+Item 2 {data-icon="fa-table"}
+===================================== 
+
+Sidebar 2 {.sidebar}
+-------------------------------------
+
+```{r}
+```
+
+
+Main content 2
+-------------------------------------
+
+### Content header 2
+    
+```{r}
+```
